@@ -41,7 +41,7 @@ Suggestions:
 
 ## Usage
 
-Via `.textlintrc`
+Via `.textlintrc`(Recommended)
 
 
 ```json
@@ -52,6 +52,12 @@ Via `.textlintrc`
         }
     }
 }
+```
+
+Via CLI
+
+```
+textlint --rule rousseau README.md
 ```
 
 ## Options
