@@ -7,14 +7,21 @@ import rule from "../src/textlint-rule-rousseau";
 // ruleName, rule, { valid, invalid }
 tester.run("rousseau", rule, {
     valid: [
-        "This is pen."
+        "This is pen.",
+        {
+            // no error
+            text: "So the cat was stolen.",
+            options: {
+                showLevels: []
+            }
+        }
     ],
     invalid: [
         {
             text: "this is pen.",
             errors: [
                 {
-                    message: `sentence should start with an uppercase letter
+                    message: `[error] sentence should start with an uppercase letter
 Suggestions:
 => This`,
                     line: 1,
@@ -25,10 +32,10 @@ Suggestions:
             text: "So the cat was stolen.",
             errors: [
                 {
-                    message: `omit 'So' from the beginning of sentences`
+                    message: `[suggestion] omit 'So' from the beginning of sentences`
                 },
                 {
-                    message: `"was stolen" may be passive voice\nSuggestions:\n=> stole`
+                    message: `[warning] "was stolen" may be passive voice\nSuggestions:\n=> stole`
                 }
             ]
         }, {
@@ -36,7 +43,7 @@ Suggestions:
 A number of pen.`,
             errors: [
                 {
-                    message: `"A number of" has a simpler alternative\nSuggestions:\n=> Many, some`,
+                    message: `[suggestion] "A number of" has a simpler alternative\nSuggestions:\n=> Many, some`,
                     line: 2,
                     column: 1
                 }

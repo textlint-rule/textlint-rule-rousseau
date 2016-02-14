@@ -4,11 +4,15 @@ import {RuleHelper} from "textlint-rule-helper"
 import StringSource from "textlint-util-to-string";
 import rousseau from "rousseau";
 const defaultOptions = {
-    showLevels: ["error", "warnings", "suggestion"]
+    showLevels: ["suggestion", "warning", "error"]
 };
 export default function textlintRousseau(context, options) {
     const helper = new RuleHelper(context);
     const {Syntax, RuleError, report, getSource} = context;
+    const showLevels = options.showLevels || defaultOptions.showLevels;
+    const isShowLevel = (level) => {
+        return showLevels.indexOf(level) !== -1;
+    };
     /*
     {
         // Type of check that output this suggestion
@@ -45,9 +49,14 @@ export default function textlintRousseau(context, options) {
             }).join("\n");
     };
     const reportError = (node, source, result) => {
-        var paddingPosition = source.originalPositionFromIndex(result.index);
+        const level = result.level;
+        // if not contains showing options, ignore this result
+        if(!isShowLevel(level)){
+            return;
+        }
+        const paddingPosition = source.originalPositionFromIndex(result.index);
         const suggestions = createSuggest(result.replacements);
-        const ruleError = new RuleError(result.message + suggestions, {
+        const ruleError = new RuleError(`[${result.level}] ${result.message}${suggestions}`, {
             line: paddingPosition.line - 1,
             column: paddingPosition.column
         });

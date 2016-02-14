@@ -48,12 +48,31 @@ Via `.textlintrc`
 {
     "rules": {
         "rousseau": {
-            "showLevels": ["error", "warnings", "suggestion"]
+            "showLevels": ["error"]
         }
     }
 }
 ```
 
+## Options
+
+## showLevels
+
+Level of importance
+
+- "suggestion",
+- "warning"
+- "error"
+
+```json
+{
+    "rules": {
+        "rousseau": {
+            "showLevels": ["suggestion", "warning", "error"]
+        }
+    }
+}
+```
 
 
 ## Tests
