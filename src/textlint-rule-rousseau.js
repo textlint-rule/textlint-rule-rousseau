@@ -9,7 +9,7 @@ const defaultOptions = {
     ignoreTypes: [],
     fakeInlineCode: true
 };
-export default function textlintRousseau(context, options) {
+export default function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
