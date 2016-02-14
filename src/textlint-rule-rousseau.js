@@ -6,13 +6,15 @@ import rousseau from "rousseau";
 const defaultOptions = {
     // "suggestion", "warning", "error"
     showLevels: ["suggestion", "warning", "error"],
-    ignoreTypes: []
+    ignoreTypes: [],
+    fakeInlineCode: true
 };
 export default function textlintRousseau(context, options) {
     const helper = new RuleHelper(context);
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
+    const fakeInlineCode = options.fakeInlineCode || defaultOptions.fakeInlineCode;
     const isShowType = (type)=> {
         return ignoreTypes.indexOf(type) === -1;
     };
@@ -77,10 +79,21 @@ export default function textlintRousseau(context, options) {
             if (helper.isChildNode(node, [Syntax.Link, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis])) {
                 return;
             }
-            // remove Code
-            node.children = node.children.filter(childNode => {
-                return childNode.type !== Syntax.Code;
-            });
+            // fake `code`
+            if (fakeInlineCode) {
+                node.children = node.children.map(childNode => {
+                    if (childNode.type === Syntax.Code) {
+                        return {
+                            type: Syntax.Str,
+                            value: "code",
+                            raw: "code",
+                            loc: childNode.loc,
+                            range: childNode.range
+                        }
+                    }
+                    return childNode;
+                });
+            }
             const source = new StringSource(node);
             const text = source.toString();
             const reportSourceError = reportError.bind(null, node, source);
