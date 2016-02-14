@@ -58,6 +58,10 @@ export default function textlintRousseau(context, options) {
             if (helper.isChildNode(node, [Syntax.Link, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis])) {
                 return;
             }
+            // remove Code
+            node.children = node.children.filter(childNode => {
+                return childNode.type !== Syntax.Code;
+            });
             const source = new StringSource(node);
             const text = source.toString();
             const reportSourceError = reportError.bind(null, node, source);
