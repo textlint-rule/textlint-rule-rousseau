@@ -27,7 +27,7 @@ tester.run("rousseau", rule, {
             text: "this is pen.",
             errors: [
                 {
-                    message: `[error] sentence should start with an uppercase letter
+                    message: `error(sentence:uppercase) sentence should start with an uppercase letter
 Suggestions:
 => This`,
                     line: 1,
@@ -38,10 +38,10 @@ Suggestions:
             text: "So the cat was stolen.",
             errors: [
                 {
-                    message: `[suggestion] omit 'So' from the beginning of sentences`
+                    message: `suggestion(so) omit 'So' from the beginning of sentences`
                 },
                 {
-                    message: `[warning] "was stolen" may be passive voice\nSuggestions:\n=> stole`
+                    message: `warning(passive) "was stolen" may be passive voice\nSuggestions:\n=> stole`
                 }
             ]
         }, {
@@ -49,7 +49,7 @@ Suggestions:
 A number of pen.`,
             errors: [
                 {
-                    message: `[suggestion] "A number of" has a simpler alternative\nSuggestions:\n=> Many, some`,
+                    message: `suggestion(simplicity) "A number of" has a simpler alternative\nSuggestions:\n=> Many, some`,
                     line: 2,
                     column: 1
                 }

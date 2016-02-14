@@ -68,7 +68,7 @@ export default function textlintRousseau(context, options) {
         }
         const paddingPosition = source.originalPositionFromIndex(result.index);
         const suggestions = createSuggest(result.replacements);
-        const ruleError = new RuleError(`[${result.level}] ${result.message}${suggestions}`, {
+        const ruleError = new RuleError(`${level}(${type}) ${result.message}${suggestions}`, {
             line: paddingPosition.line - 1,
             column: paddingPosition.column
         });
