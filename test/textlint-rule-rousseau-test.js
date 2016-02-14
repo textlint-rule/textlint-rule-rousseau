@@ -9,6 +9,12 @@ tester.run("rousseau", rule, {
     valid: [
         "This is pen.",
         {
+            text: "this is pen.",
+            options: {
+                ignoreTypes: ["sentence:uppercase"]
+            }
+        },
+        {
             // no error
             text: "So the cat was stolen.",
             options: {

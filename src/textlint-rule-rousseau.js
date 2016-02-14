@@ -5,12 +5,17 @@ import StringSource from "textlint-util-to-string";
 import rousseau from "rousseau";
 const defaultOptions = {
     // "suggestion", "warning", "error"
-    showLevels: ["suggestion", "warning", "error"]
+    showLevels: ["suggestion", "warning", "error"],
+    ignoreTypes: []
 };
 export default function textlintRousseau(context, options) {
     const helper = new RuleHelper(context);
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
+    const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
+    const isShowType = (type)=> {
+        return ignoreTypes.indexOf(type) === -1;
+    };
     const isShowLevel = (level) => {
         return showLevels.indexOf(level) !== -1;
     };
@@ -51,8 +56,12 @@ export default function textlintRousseau(context, options) {
     };
     const reportError = (node, source, result) => {
         const level = result.level;
+        const type = result.type;
         // if not contains showing options, ignore this result
-        if(!isShowLevel(level)){
+        if (!isShowLevel(level)) {
+            return;
+        }
+        if (!isShowType(type)) {
             return;
         }
         const paddingPosition = source.originalPositionFromIndex(result.index);

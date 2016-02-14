@@ -56,7 +56,7 @@ Via `.textlintrc`
 
 ## Options
 
-## showLevels
+### showLevels
 
 Level of importance
 
@@ -74,6 +74,19 @@ Level of importance
 }
 ```
 
+### ignoreTypes
+
+See https://github.com/GitbookIO/rousseau#checks
+
+```json
+{
+    "rules": {
+        "rousseau": {
+            "ignoreTypes": ["sentence:uppercase"]
+        }
+    }
+}
+```
 
 ## Tests
 
