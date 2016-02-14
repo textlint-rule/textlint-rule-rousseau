@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/azu/textlint-rule-rousseau/issues"
   },
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "textlint rule check english sentence using rousseau",
   "main": "lib/textlint-rule-rousseau.js",
   "files": [
