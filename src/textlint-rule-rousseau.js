@@ -4,6 +4,7 @@ import {RuleHelper} from "textlint-rule-helper"
 import StringSource from "textlint-util-to-string";
 import rousseau from "rousseau";
 const defaultOptions = {
+    // "suggestion", "warning", "error"
     showLevels: ["suggestion", "warning", "error"]
 };
 export default function textlintRousseau(context, options) {

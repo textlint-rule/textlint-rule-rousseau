@@ -48,7 +48,7 @@ Via `.textlintrc`
 {
     "rules": {
         "rousseau": {
-            "showLevels": ["error"]
+            "showLevels": ["suggestion", "warning", "error"]
         }
     }
 }
