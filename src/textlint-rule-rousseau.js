@@ -7,13 +7,17 @@ const filter = require('unist-util-filter');
 const defaultOptions = {
     // "suggestion", "warning", "error"
     showLevels: ["suggestion", "warning", "error"],
-    ignoreTypes: []
+    // ignore check type of https://github.com/GitbookIO/rousseau#checks
+    ignoreTypes: [],
+    // ignore textlint's node type
+    ignoreInlineNodeTypes: undefined
 };
 export default function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
+    const ignoreInlineNodeTypes = options.ignoreInlineNodeTypes || [Syntax.Image, Syntax.Code, Syntax.Link];
     const isShowType = (type)=> {
         return ignoreTypes.indexOf(type) === -1;
     };
@@ -80,15 +84,15 @@ export default function textlintRousseau(context, options = defaultOptions) {
                 return;
             }
             const filteredNode = filter(node, (node) => {
-                return node.type !== Syntax.Code && node.type !== Syntax.Link;
+                return ignoreInlineNodeTypes.indexOf(node.type) === -1;
             });
             if (!filteredNode) {
                 return;
             }
             const source = new StringSource(filteredNode);
             const text = source.toString();
-            const reportSourceError = (ruleError) => {
-                report(node, ruleError);
+            const reportSourceError = (results) => {
+                reportError(node, source, results);
             };
             rousseau(text, function (err, results) {
                 if (err) {

@@ -7,7 +7,12 @@ import rule from "../src/textlint-rule-rousseau";
 // ruleName, rule, { valid, invalid }
 tester.run("rousseau", rule, {
     valid: [
+        // ignore Link
         "[So the cat was stolen.](http://example.com)",
+        // ignore Image
+        "![So the cat was stolen.](http://example.com)",
+        // ignore Code
+        "`So the cat was stolen.`",
         "This is pen.",
         {
             text: "this is pen.",
