@@ -1,4 +1,4 @@
-# textlint-rule-rousseau
+# textlint-rule-rousseau [![Build Status](https://travis-ci.org/azu/textlint-rule-rousseau.svg?branch=master)](https://travis-ci.org/azu/textlint-rule-rousseau)
 
 A [textlint](https://github.com/textlint/textlint "textlint") rule check english sentence using [rousseau](https://github.com/GitbookIO/rousseau "rousseau").
 
