@@ -3,7 +3,7 @@
 const {RuleHelper} = require("textlint-rule-helper");
 const StringSource = require("textlint-util-to-string").default;
 const rousseau = require("rousseau");
-const filter = require('unist-util-filter');
+const ObjectAssign = require("object-assign");
 const defaultOptions = {
     // "suggestion", "warning", "error"
     showLevels: ["suggestion", "warning", "error"],
@@ -12,12 +12,25 @@ const defaultOptions = {
     // ignore textlint's node type
     ignoreInlineNodeTypes: undefined
 };
+
+const mapNode = function (ast, mapFn) {
+    return (function preorder(node, index, parent) {
+        const newNode = ObjectAssign({}, mapFn(node, index, parent));
+        if (node.children) {
+            newNode.children = node.children.map(function (child, index) {
+                return preorder(child, index, node);
+            });
+        }
+        return newNode;
+    }(ast, null, null));
+};
+
 export default function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
-    const ignoreInlineNodeTypes = options.ignoreInlineNodeTypes || [Syntax.Image, Syntax.Code, Syntax.Link];
+    const ignoreInlineNodeTypes = options.ignoreInlineNodeTypes || [Syntax.Code];
     const isShowType = (type)=> {
         return ignoreTypes.indexOf(type) === -1;
     };
@@ -82,8 +95,17 @@ export default function textlintRousseau(context, options = defaultOptions) {
             if (helper.isChildNode(node, [Syntax.Link, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis])) {
                 return;
             }
-            const filteredNode = filter(node, (node) => {
-                return ignoreInlineNodeTypes.indexOf(node.type) === -1;
+            const filteredNode = mapNode(node, (node) => {
+                const index = ignoreInlineNodeTypes.indexOf(node.type);
+                if (index === -1) {
+                    return node;
+                }
+                /*
+                `xxx` => code
+                 */
+                return ObjectAssign({}, node, {
+                    value: node.type.toLocaleLowerCase()
+                });
             });
             if (!filteredNode) {
                 return;
