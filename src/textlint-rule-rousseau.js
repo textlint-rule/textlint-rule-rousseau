@@ -69,11 +69,10 @@ export default function textlintRousseau(context, options = defaultOptions) {
         if (!isShowType(type)) {
             return;
         }
-        const paddingPosition = source.originalPositionFromIndex(result.index);
+        const index = source.originalIndexFromIndex(result.index);
         const suggestions = createSuggest(result.replacements);
         const ruleError = new RuleError(`${level}(${type}) ${result.message}${suggestions}`, {
-            line: paddingPosition.line - 1,
-            column: paddingPosition.column
+            index
         });
         report(node, ruleError);
     };
