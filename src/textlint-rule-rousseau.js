@@ -87,7 +87,9 @@ export default function textlintRousseau(context, options = defaultOptions) {
             }
             const source = new StringSource(filteredNode);
             const text = source.toString();
-            const reportSourceError = reportError.bind(null, node, source);
+            const reportSourceError = (ruleError) => {
+                report(node, ruleError);
+            };
             rousseau(text, function (err, results) {
                 if (err) {
                     throw err;
