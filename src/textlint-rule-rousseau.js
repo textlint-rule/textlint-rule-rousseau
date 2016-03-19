@@ -1,20 +1,23 @@
 // LICENSE : MIT
 "use strict";
-import {RuleHelper} from "textlint-rule-helper"
-import StringSource from "textlint-util-to-string";
-import rousseau from "rousseau";
+const {RuleHelper} = require("textlint-rule-helper");
+const StringSource = require("textlint-util-to-string").default;
+const rousseau = require("rousseau");
+const filter = require('unist-util-filter');
 const defaultOptions = {
     // "suggestion", "warning", "error"
     showLevels: ["suggestion", "warning", "error"],
+    // ignore check type of https://github.com/GitbookIO/rousseau#checks
     ignoreTypes: [],
-    fakeInlineCode: true
+    // ignore textlint's node type
+    ignoreInlineNodeTypes: undefined
 };
 export default function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
-    const fakeInlineCode = options.fakeInlineCode || defaultOptions.fakeInlineCode;
+    const ignoreInlineNodeTypes = options.ignoreInlineNodeTypes || [Syntax.Image, Syntax.Code, Syntax.Link];
     const isShowType = (type)=> {
         return ignoreTypes.indexOf(type) === -1;
     };
@@ -74,29 +77,23 @@ export default function textlintRousseau(context, options = defaultOptions) {
         });
         report(node, ruleError);
     };
+
     return {
         [Syntax.Paragraph](node){
             if (helper.isChildNode(node, [Syntax.Link, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis])) {
                 return;
             }
-            // fake `code`
-            if (fakeInlineCode) {
-                node.children = node.children.map(childNode => {
-                    if (childNode.type === Syntax.Code) {
-                        return {
-                            type: Syntax.Str,
-                            value: "code",
-                            raw: "code",
-                            loc: childNode.loc,
-                            range: childNode.range
-                        }
-                    }
-                    return childNode;
-                });
+            const filteredNode = filter(node, (node) => {
+                return ignoreInlineNodeTypes.indexOf(node.type) === -1;
+            });
+            if (!filteredNode) {
+                return;
             }
-            const source = new StringSource(node);
+            const source = new StringSource(filteredNode);
             const text = source.toString();
-            const reportSourceError = reportError.bind(null, node, source);
+            const reportSourceError = (results) => {
+                reportError(node, source, results);
+            };
             rousseau(text, function (err, results) {
                 if (err) {
                     throw err;
