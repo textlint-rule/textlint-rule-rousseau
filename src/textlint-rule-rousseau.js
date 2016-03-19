@@ -1,20 +1,19 @@
 // LICENSE : MIT
 "use strict";
-import {RuleHelper} from "textlint-rule-helper"
-import StringSource from "textlint-util-to-string";
-import rousseau from "rousseau";
+const {RuleHelper} = require("textlint-rule-helper");
+const StringSource = require("textlint-util-to-string").default;
+const rousseau = require("rousseau");
+const filter = require('unist-util-filter');
 const defaultOptions = {
     // "suggestion", "warning", "error"
     showLevels: ["suggestion", "warning", "error"],
-    ignoreTypes: [],
-    fakeInlineCode: true
+    ignoreTypes: []
 };
 export default function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
-    const fakeInlineCode = options.fakeInlineCode || defaultOptions.fakeInlineCode;
     const isShowType = (type)=> {
         return ignoreTypes.indexOf(type) === -1;
     };
@@ -74,27 +73,19 @@ export default function textlintRousseau(context, options = defaultOptions) {
         });
         report(node, ruleError);
     };
+
     return {
         [Syntax.Paragraph](node){
             if (helper.isChildNode(node, [Syntax.Link, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis])) {
                 return;
             }
-            // fake `code`
-            if (fakeInlineCode) {
-                node.children = node.children.map(childNode => {
-                    if (childNode.type === Syntax.Code) {
-                        return {
-                            type: Syntax.Str,
-                            value: "code",
-                            raw: "code",
-                            loc: childNode.loc,
-                            range: childNode.range
-                        }
-                    }
-                    return childNode;
-                });
+            const filteredNode = filter(node, (node) => {
+                return node.type !== Syntax.Code && node.type !== Syntax.Link;
+            });
+            if (!filteredNode) {
+                return;
             }
-            const source = new StringSource(node);
+            const source = new StringSource(filteredNode);
             const text = source.toString();
             const reportSourceError = reportError.bind(null, node, source);
             rousseau(text, function (err, results) {

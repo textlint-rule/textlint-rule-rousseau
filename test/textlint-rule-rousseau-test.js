@@ -7,6 +7,7 @@ import rule from "../src/textlint-rule-rousseau";
 // ruleName, rule, { valid, invalid }
 tester.run("rousseau", rule, {
     valid: [
+        "[So the cat was stolen.](http://example.com)",
         "This is pen.",
         {
             text: "this is pen.",
