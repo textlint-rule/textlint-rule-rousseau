@@ -44,8 +44,8 @@
     "textlint-tester": "^1.1.0"
   },
   "dependencies": {
+    "rousseau": "^1.0.0",
     "object-assign": "^4.0.1",
-    "rousseau": "github:azu/rousseau#fix-for-strict-mode",
     "textlint-rule-helper": "^1.1.5",
     "textlint-util-to-string": "^1.2.0"
   }
