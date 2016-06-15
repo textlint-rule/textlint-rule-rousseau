@@ -1,6 +1,7 @@
 // LICENSE : MIT
 "use strict";
 import {RuleHelper, IgnoreNodeManger} from "textlint-rule-helper";
+const StringSource = require("textlint-util-to-string").default;
 const rousseau = require("rousseau");
 const ObjectAssign = require("object-assign");
 const defaultOptions = {
@@ -72,7 +73,7 @@ export default function textlintRousseau(context, options = defaultOptions) {
                 return "=> " + value;
             }).join("\n");
     };
-    const reportError = (node, result) => {
+    const reportError = (node, source, result) => {
         const level = result.level;
         const type = result.type;
         // if not contains showing options, ignore this result
@@ -82,9 +83,9 @@ export default function textlintRousseau(context, options = defaultOptions) {
         if (!isShowType(type)) {
             return;
         }
-        const index = result.index;
+        const index = source.originalIndexFromIndex(result.index);
         // if already ignored, should not report
-        if(ignoreNodeManager.isIgnoredIndex(index)){
+        if (ignoreNodeManager.isIgnoredIndex(index)) {
             return;
         }
         const suggestions = createSuggest(result.replacements);
@@ -103,9 +104,11 @@ export default function textlintRousseau(context, options = defaultOptions) {
             // ignore if contain child node types
             ignoreNodeManager.ignoreChildrenByTypes(node, ignoreInlineNodeTypes);
             // check
-            const text = getSource(node);
+
+            const source = new StringSource(node);
+            const text = source.toString();
             const reportSourceError = (results) => {
-                reportError(node, results);
+                reportError(node, source, results);
             };
             rousseau(text, function (err, results) {
                 if (err) {

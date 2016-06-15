@@ -13,6 +13,7 @@ tester.run("rousseau", rule, {
         "This is *pen*.",
         "This is **pen**.",
         "This is __pen__.",
+        "`this` is pen.",
         {
             text: "this is pen.",
             options: {
@@ -59,6 +60,28 @@ A number of pen.`,
                     column: 1
                 }
             ]
-        }
+        }, {
+            text: `There are a pen.
+A number of pen.`,
+            errors: [
+                {
+                    message: `suggestion(simplicity) "A number of" has a simpler alternative\nSuggestions:\n=> Many, some`,
+                    line: 2,
+                    column: 1
+                }
+            ]
+        },
+        {
+            text: "this is `pen`.`this is pen code`",
+            errors: [
+                {
+                    message: `error(sentence:uppercase) sentence should start with an uppercase letter
+Suggestions:
+=> This`,
+                    line: 1,
+                    column: 1
+                }
+            ]
+        },
     ]
 });
