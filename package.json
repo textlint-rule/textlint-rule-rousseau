@@ -36,7 +36,7 @@
   ],
   "devDependencies": {
     "babel-cli": "^6.5.1",
-    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-es2015": "^6.5.0",
     "babel-register": "^6.5.2",
     "mocha": "^2.4.5",
@@ -44,9 +44,9 @@
     "textlint-tester": "^1.1.0"
   },
   "dependencies": {
-    "rousseau": "^1.0.0",
     "object-assign": "^4.0.1",
-    "textlint-rule-helper": "^1.1.5",
+    "rousseau": "^1.0.0",
+    "textlint-rule-helper": "^1.2.0",
     "textlint-util-to-string": "^1.2.0"
   }
 }

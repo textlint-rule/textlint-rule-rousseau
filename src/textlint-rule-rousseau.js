@@ -1,6 +1,6 @@
 // LICENSE : MIT
 "use strict";
-const {RuleHelper} = require("textlint-rule-helper");
+import {RuleHelper, IgnoreNodeManger} from "textlint-rule-helper";
 const StringSource = require("textlint-util-to-string").default;
 const rousseau = require("rousseau");
 const ObjectAssign = require("object-assign");
@@ -27,6 +27,7 @@ const mapNode = function (ast, mapFn) {
 
 export default function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
+    const ignoreNodeManager = new IgnoreNodeManger();
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
@@ -83,6 +84,10 @@ export default function textlintRousseau(context, options = defaultOptions) {
             return;
         }
         const index = source.originalIndexFromIndex(result.index);
+        // if already ignored, should not report
+        if (ignoreNodeManager.isIgnoredIndex(index)) {
+            return;
+        }
         const suggestions = createSuggest(result.replacements);
         const ruleError = new RuleError(`${level}(${type}) ${result.message}${suggestions}`, {
             index
@@ -92,25 +97,15 @@ export default function textlintRousseau(context, options = defaultOptions) {
 
     return {
         [Syntax.Paragraph](node){
+            // ignore if wrapped node types
             if (helper.isChildNode(node, [Syntax.Link, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis])) {
                 return;
             }
-            const filteredNode = mapNode(node, (node) => {
-                const index = ignoreInlineNodeTypes.indexOf(node.type);
-                if (index === -1) {
-                    return node;
-                }
-                /*
-                `xxx` => code
-                 */
-                return ObjectAssign({}, node, {
-                    value: node.type.toLocaleLowerCase()
-                });
-            });
-            if (!filteredNode) {
-                return;
-            }
-            const source = new StringSource(filteredNode);
+            // ignore if contain child node types
+            ignoreNodeManager.ignoreChildrenByTypes(node, ignoreInlineNodeTypes);
+            // check
+
+            const source = new StringSource(node);
             const text = source.toString();
             const reportSourceError = (results) => {
                 reportError(node, source, results);
