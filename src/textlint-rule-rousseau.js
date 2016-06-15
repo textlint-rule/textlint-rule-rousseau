@@ -1,7 +1,6 @@
 // LICENSE : MIT
 "use strict";
-const {RuleHelper} = require("textlint-rule-helper");
-const StringSource = require("textlint-util-to-string").default;
+import {RuleHelper, IgnoreNodeManger} from "textlint-rule-helper";
 const rousseau = require("rousseau");
 const ObjectAssign = require("object-assign");
 const defaultOptions = {
@@ -27,6 +26,7 @@ const mapNode = function (ast, mapFn) {
 
 export default function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
+    const ignoreNodeManager = new IgnoreNodeManger();
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
@@ -72,7 +72,7 @@ export default function textlintRousseau(context, options = defaultOptions) {
                 return "=> " + value;
             }).join("\n");
     };
-    const reportError = (node, source, result) => {
+    const reportError = (node, result) => {
         const level = result.level;
         const type = result.type;
         // if not contains showing options, ignore this result
@@ -82,7 +82,11 @@ export default function textlintRousseau(context, options = defaultOptions) {
         if (!isShowType(type)) {
             return;
         }
-        const index = source.originalIndexFromIndex(result.index);
+        const index = result.index;
+        // if already ignored, should not report
+        if(ignoreNodeManager.isIgnoredIndex(index)){
+            return;
+        }
         const suggestions = createSuggest(result.replacements);
         const ruleError = new RuleError(`${level}(${type}) ${result.message}${suggestions}`, {
             index
@@ -92,28 +96,16 @@ export default function textlintRousseau(context, options = defaultOptions) {
 
     return {
         [Syntax.Paragraph](node){
+            // ignore if wrapped node types
             if (helper.isChildNode(node, [Syntax.Link, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis])) {
                 return;
             }
-            const filteredNode = mapNode(node, (node) => {
-                const index = ignoreInlineNodeTypes.indexOf(node.type);
-                if (index === -1) {
-                    return node;
-                }
-                /*
-                `xxx` => code
-                 */
-                return ObjectAssign({}, node, {
-                    value: node.type.toLocaleLowerCase()
-                });
-            });
-            if (!filteredNode) {
-                return;
-            }
-            const source = new StringSource(filteredNode);
-            const text = source.toString();
+            // ignore if contain child node types
+            ignoreNodeManager.ignoreChildrenByTypes(node, ignoreInlineNodeTypes);
+            // check
+            const text = getSource(node);
             const reportSourceError = (results) => {
-                reportError(node, source, results);
+                reportError(node, results);
             };
             rousseau(text, function (err, results) {
                 if (err) {
