@@ -3,6 +3,7 @@
 import {RuleHelper, IgnoreNodeManger} from "textlint-rule-helper";
 const StringSource = require("textlint-util-to-string").default;
 const rousseau = require("rousseau");
+const map = require("unist-util-map");
 const ObjectAssign = require("object-assign");
 const defaultOptions = {
     // "suggestion", "warning", "error"
@@ -10,7 +11,7 @@ const defaultOptions = {
     // ignore check type of https://github.com/GitbookIO/rousseau#checks
     ignoreTypes: [],
     // ignore textlint's node type
-    ignoreInlineNodeTypes: undefined
+    ignoreInlineNodeTypes: ["Code"]
 };
 
 const mapNode = function (ast, mapFn) {
@@ -39,30 +40,30 @@ export default function textlintRousseau(context, options = defaultOptions) {
         return showLevels.indexOf(level) !== -1;
     };
     /*
-    {
-        // Type of check that output this suggestion
-        type: "so",
+     {
+     // Type of check that output this suggestion
+     type: "so",
 
-        // Level of importance
-        // "suggestion", "warning", "error"
-        level: "warning",
+     // Level of importance
+     // "suggestion", "warning", "error"
+     level: "warning",
 
-        // Index in the text
-        index: 10,
+     // Index in the text
+     index: 10,
 
-        // Size of the section in the text
-        offset: 2,
+     // Size of the section in the text
+     offset: 2,
 
-        // Message to describe the suggestion
-        message: "omit 'So' from the beginning of sentences",
+     // Message to describe the suggestion
+     message: "omit 'So' from the beginning of sentences",
 
-        // Replacements suggestion
-        replacements: [
-            {
-                value: ""
-            }
-        ]
-    }
+     // Replacements suggestion
+     replacements: [
+     {
+     value: ""
+     }
+     ]
+     }
      */
     const createSuggest = (replacements) => {
         if (replacements.length === 0) {
@@ -104,8 +105,21 @@ export default function textlintRousseau(context, options = defaultOptions) {
             // ignore if contain child node types
             ignoreNodeManager.ignoreChildrenByTypes(node, ignoreInlineNodeTypes);
             // check
-
-            const source = new StringSource(node);
+            // replace code with dummy code
+            // if you want to filter(remove) code, use https://github.com/eush77/unist-util-filter
+            const filteredNode = map(node, (node) => {
+                if (node.type === Syntax.Code) {
+                    // only change `value` to dummy
+                    return ObjectAssign({}, node, {
+                        value: new Array(node.value.length + 1).join("x")
+                    });
+                }
+                return node;
+            });
+            if (!filteredNode) {
+                return;
+            }
+            const source = new StringSource(filteredNode);
             const text = source.toString();
             const reportSourceError = (results) => {
                 reportError(node, source, results);

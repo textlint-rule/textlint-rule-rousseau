@@ -15,6 +15,20 @@ tester.run("rousseau", rule, {
         "This is __pen__.",
         "`this` is pen.",
         {
+            text: "Put the config of rules into `.textlintrc`",
+            options: {
+                "showLevels": [
+                    "warning",
+                    "error"
+                ],
+                "ignoreTypes": [
+                    "sentence:uppercase",
+                    "passive",
+                    "weasel"
+                ]
+            },
+        },
+        {
             text: "this is pen.",
             options: {
                 ignoreTypes: ["sentence:uppercase"]

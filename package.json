@@ -47,6 +47,7 @@
     "object-assign": "^4.0.1",
     "rousseau": "^1.0.0",
     "textlint-rule-helper": "^1.2.0",
-    "textlint-util-to-string": "^1.2.0"
+    "textlint-util-to-string": "^1.2.1",
+    "unist-util-map": "^1.0.1"
   }
 }
