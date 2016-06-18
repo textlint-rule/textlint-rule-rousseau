@@ -1,6 +1,6 @@
 // LICENSE : MIT
 "use strict";
-import {RuleHelper, IgnoreNodeManger} from "textlint-rule-helper";
+import {RuleHelper, IgnoreNodeManager} from "textlint-rule-helper";
 const StringSource = require("textlint-util-to-string").default;
 const rousseau = require("rousseau");
 const map = require("unist-util-map");
@@ -28,7 +28,7 @@ const mapNode = function (ast, mapFn) {
 
 export default function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
-    const ignoreNodeManager = new IgnoreNodeManger();
+    const ignoreNodeManager = new IgnoreNodeManager();
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
