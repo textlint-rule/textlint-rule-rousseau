@@ -1,10 +1,9 @@
 // LICENSE : MIT
 "use strict";
 import {RuleHelper, IgnoreNodeManager} from "textlint-rule-helper";
-const StringSource = require("textlint-util-to-string").default;
+const StringSource = require("textlint-util-to-string");
 const rousseau = require("rousseau");
 const map = require("unist-util-map");
-const ObjectAssign = require("object-assign");
 const defaultOptions = {
     // "suggestion", "warning", "error"
     showLevels: ["suggestion", "warning", "error"],
@@ -16,7 +15,7 @@ const defaultOptions = {
 
 const mapNode = function (ast, mapFn) {
     return (function preorder(node, index, parent) {
-        const newNode = ObjectAssign({}, mapFn(node, index, parent));
+        const newNode = Object.assign({}, mapFn(node, index, parent));
         if (node.children) {
             newNode.children = node.children.map(function (child, index) {
                 return preorder(child, index, node);
@@ -26,14 +25,14 @@ const mapNode = function (ast, mapFn) {
     }(ast, null, null));
 };
 
-export default function textlintRousseau(context, options = defaultOptions) {
+module.exports = function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
     const ignoreNodeManager = new IgnoreNodeManager();
     const {Syntax, RuleError, report, getSource} = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
     const ignoreInlineNodeTypes = options.ignoreInlineNodeTypes || [Syntax.Code];
-    const isShowType = (type)=> {
+    const isShowType = (type) => {
         return ignoreTypes.indexOf(type) === -1;
     };
     const isShowLevel = (level) => {
@@ -41,28 +40,28 @@ export default function textlintRousseau(context, options = defaultOptions) {
     };
     /*
      {
-     // Type of check that output this suggestion
-     type: "so",
+         // Type of check that output this suggestion
+         type: "so",
 
-     // Level of importance
-     // "suggestion", "warning", "error"
-     level: "warning",
+         // Level of importance
+         // "suggestion", "warning", "error"
+         level: "warning",
 
-     // Index in the text
-     index: 10,
+         // Index in the text
+         index: 10,
 
-     // Size of the section in the text
-     offset: 2,
+         // Size of the section in the text
+         offset: 2,
 
-     // Message to describe the suggestion
-     message: "omit 'So' from the beginning of sentences",
+         // Message to describe the suggestion
+         message: "omit 'So' from the beginning of sentences",
 
-     // Replacements suggestion
-     replacements: [
-     {
-     value: ""
-     }
-     ]
+         // Replacements suggestion
+         replacements: [
+             {
+                value: ""
+             }
+         ]
      }
      */
     const createSuggest = (replacements) => {
@@ -97,7 +96,7 @@ export default function textlintRousseau(context, options = defaultOptions) {
     };
 
     return {
-        [Syntax.Paragraph](node){
+        [Syntax.Paragraph](node) {
             // ignore if wrapped node types
             if (helper.isChildNode(node, [Syntax.Link, Syntax.Image, Syntax.BlockQuote, Syntax.Emphasis])) {
                 return;
@@ -110,7 +109,7 @@ export default function textlintRousseau(context, options = defaultOptions) {
             const filteredNode = map(node, (node) => {
                 if (node.type === Syntax.Code) {
                     // only change `value` to dummy
-                    return ObjectAssign({}, node, {
+                    return Object.assign({}, node, {
                         value: new Array(node.value.length + 1).join("x")
                     });
                 }
@@ -132,4 +131,4 @@ export default function textlintRousseau(context, options = defaultOptions) {
             });
         }
     }
-}
+};

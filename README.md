@@ -1,4 +1,4 @@
-# textlint-rule-rousseau [![Build Status](https://travis-ci.org/azu/textlint-rule-rousseau.svg?branch=master)](https://travis-ci.org/azu/textlint-rule-rousseau)
+# textlint-rule-rousseau [![Build Status](https://travis-ci.org/textlint-rule/textlint-rule-rousseau.svg?branch=master)](https://travis-ci.org/textlint-rule/textlint-rule-rousseau)
 
 A [textlint](https://github.com/textlint/textlint "textlint") rule check english sentence using [rousseau](https://github.com/GitbookIO/rousseau "rousseau").
 
@@ -16,7 +16,7 @@ Lint results:
 $ textlint --rule textlint-rule-rousseau README.md
 
 textlint-rule-rousseau: omit 'So' from the beginning of sentences
-/Users/azu/.ghq/github.com/azu/textlint-rule-rousseau/README.md:11:1
+/Users/textlint-rule/.ghq/github.com/textlint-rule/textlint-rule-rousseau/README.md:11:1
         v
     10.
     11. So the cat was stolen.
@@ -26,7 +26,7 @@ textlint-rule-rousseau: omit 'So' from the beginning of sentences
 textlint-rule-rousseau: "was stolen" may be passive voice
 Suggestions:
 => stole
-/Users/azu/.ghq/github.com/azu/textlint-rule-rousseau/README.md:11:12
+/Users/textlint-rule/.ghq/github.com/textlint-rule/textlint-rule-rousseau/README.md:11:12
                    v
     10.
     11. So the cat was stolen.
