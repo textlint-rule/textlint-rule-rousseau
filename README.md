@@ -1,4 +1,4 @@
-# textlint-rule-rousseau [![Build Status](https://travis-ci.org/textlint-rule/textlint-rule-rousseau.svg?branch=master)](https://travis-ci.org/textlint-rule/textlint-rule-rousseau)
+# textlint-rule-rousseau [![Actions Status: test](https://github.com/textlint-rule/textlint-rule-rousseau/workflows/test/badge.svg)](https://github.com/textlint-rule/textlint-rule-rousseau/actions?query=workflow%3A"test")
 
 A [textlint](https://github.com/textlint/textlint "textlint") rule check english sentence using [rousseau](https://github.com/GitbookIO/rousseau "rousseau").
 
