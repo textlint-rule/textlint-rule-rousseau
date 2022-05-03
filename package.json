@@ -35,7 +35,8 @@
     "spellcheck"
   ],
   "devDependencies": {
-    "textlint-scripts": "^12.1.1"
+    "textlint-scripts": "^12.1.1",
+    "textlint-tester": "^12.1.1"
   },
   "dependencies": {
     "rousseau": "^1.0.0",
