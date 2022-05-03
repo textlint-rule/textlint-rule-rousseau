@@ -1,9 +1,10 @@
 // LICENSE : MIT
 "use strict";
-import {RuleHelper, IgnoreNodeManager} from "textlint-rule-helper";
-const StringSource = require("textlint-util-to-string");
-const rousseau = require("rousseau");
-const map = require("unist-util-map");
+import { RuleHelper, IgnoreNodeManager } from "textlint-rule-helper";
+import { StringSource } from "textlint-util-to-string";
+import rousseau from "rousseau";
+import map from "unist-util-map";
+
 const defaultOptions = {
     // "suggestion", "warning", "error"
     showLevels: ["suggestion", "warning", "error"],
@@ -28,7 +29,7 @@ const mapNode = function (ast, mapFn) {
 module.exports = function textlintRousseau(context, options = defaultOptions) {
     const helper = new RuleHelper(context);
     const ignoreNodeManager = new IgnoreNodeManager();
-    const {Syntax, RuleError, report, getSource} = context;
+    const { Syntax, RuleError, report, getSource } = context;
     const showLevels = options.showLevels || defaultOptions.showLevels;
     const ignoreTypes = options.ignoreTypes || defaultOptions.ignoreTypes;
     const ignoreInlineNodeTypes = options.ignoreInlineNodeTypes || [Syntax.Code];
@@ -69,7 +70,7 @@ module.exports = function textlintRousseau(context, options = defaultOptions) {
             return "";
         }
         return "\nSuggestions:\n"
-            + replacements.map(({value}) => {
+            + replacements.map(({ value }) => {
                 return "=> " + value;
             }).join("\n");
     };
@@ -94,7 +95,7 @@ module.exports = function textlintRousseau(context, options = defaultOptions) {
         });
         report(node, ruleError);
     };
-
+    
     return {
         [Syntax.Paragraph](node) {
             // ignore if wrapped node types

@@ -1,6 +1,7 @@
 // LICENSE : MIT
 "use strict";
-var TextLintTester = require("textlint-tester");
+import TextLintTester from "textlint-tester";
+
 var tester = new TextLintTester();
 // rule
 import rule from "../src/textlint-rule-rousseau";
