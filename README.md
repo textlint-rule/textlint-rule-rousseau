@@ -4,7 +4,7 @@ A [textlint](https://github.com/textlint/textlint "textlint") rule check english
 
 ## What does checked?
 
-See [Checks](https://github.com/GitbookIO/rousseau#checks "Checks") of rousseau.
+See [Checks](https://github.com/textlint-rule/rousseau#checks "Checks") of rousseau.
 
 ### Example
 
