@@ -1,6 +1,6 @@
 # textlint-rule-rousseau [![Actions Status: test](https://github.com/textlint-rule/textlint-rule-rousseau/workflows/test/badge.svg)](https://github.com/textlint-rule/textlint-rule-rousseau/actions?query=workflow%3A"test")
 
-A [textlint](https://github.com/textlint/textlint "textlint") rule check english sentence using [rousseau](https://github.com/GitbookIO/rousseau "rousseau").
+A [textlint](https://github.com/textlint/textlint "textlint") rule check english sentence using [rousseau](https://github.com/textlint-rule/rousseau "rousseau").
 
 ## What does checked?
 
