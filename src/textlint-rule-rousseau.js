@@ -2,7 +2,7 @@
 "use strict";
 import { RuleHelper, IgnoreNodeManager } from "textlint-rule-helper";
 import { StringSource } from "textlint-util-to-string";
-import rousseau from "rousseau";
+import rousseau from "@textlint-rule/rousseau";
 import map from "unist-util-map";
 
 const defaultOptions = {
@@ -95,7 +95,6 @@ module.exports = function textlintRousseau(context, options = defaultOptions) {
         });
         report(node, ruleError);
     };
-    
     return {
         [Syntax.Paragraph](node) {
             // ignore if wrapped node types
