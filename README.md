@@ -82,7 +82,7 @@ Level of importance
 
 ### ignoreTypes
 
-See https://github.com/GitbookIO/rousseau#checks
+See https://github.com/textlint-rule/rousseau#checks
 
 ```json
 {
